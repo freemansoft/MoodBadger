@@ -1,0 +1,13 @@
+{"moods" :
+		[
+			["Happy","happy.jpg"],
+			["Sad","sad.jpg"],
+			["Bored","bored.jpg"],
+			["Annoyed","annoyed.jpg"],
+			["Angry","angry.jpg"],
+			["Embarassed","embarassed.jpg"],
+			["Suprised","surprised.jpg"],
+			["Very Happy","very_happy.jpg"]
+		]
+
+}
