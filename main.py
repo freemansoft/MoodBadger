@@ -1,15 +1,14 @@
 import time
-time.sleep(0.1) # Wait for USB to become ready
 
+time.sleep(0.1)  # Wait for USB to become ready
 
-import ujson
-import uio
 
 import badger2040
 import jpegdec
+import uio
+import ujson
 
-
-#Set some constants
+# Set some constants
 CONFIGPATH = "/moods/"
 CONFIGFILE = "config.json"
 STATEFILE = "/state.txt"
@@ -19,40 +18,39 @@ jpeg = jpegdec.JPEG(badger.display)
 
 
 def write_mood(mood):
-    f = uio.open(STATEFILE, 'wt') 
+    f = uio.open(STATEFILE, "wt")
     f.write(str(mood))
     f.close()
-    f = uio.open(STATEFILE, 'r')
+    f = uio.open(STATEFILE, "r")
     read_mood = f.read()
     f.close()
     return read_mood
+
 
 def read_mood():
-    f = uio.open(STATEFILE, 'r')
+    f = uio.open(STATEFILE, "r")
     read_mood = f.read()
     f.close()
     return read_mood
 
 
-def refresh_screen(mood,speed):
+def refresh_screen(mood, speed):
     badger.set_update_speed(speed)
     badger.set_pen(15)
-    badger.rectangle(0,0,badger2040.WIDTH,badger2040.HEIGHT)
+    badger.rectangle(0, 0, badger2040.WIDTH, badger2040.HEIGHT)
     badger.set_thickness(3)
     badger.set_pen(0)
-    badger.set_font('sans')
+    badger.set_font("sans")
 
-    badger.text(config['moods'][mood][0], 140,50, scale = .75)
+    badger.text(config["moods"][mood][0], 140, 50, scale=0.75)
 
-
-    jpeg.open_file(CONFIGPATH + config['moods'][mood][1])
+    jpeg.open_file(CONFIGPATH + config["moods"][mood][1])
     jpeg.decode(0, 0)
     badger.update()
-    
-    
+
 
 # Open the config file and read out the json
-f = uio.open(CONFIGPATH + CONFIGFILE, mode='r')
+f = uio.open(CONFIGPATH + CONFIGFILE, mode="r")
 json_data = f.read()
 f.close()
 config = ujson.loads(json_data)
@@ -65,38 +63,43 @@ except:
     saved_mood = 0
     write_mood(str(saved_mood))
 
-if saved_mood >= len(config['moods']):
+if saved_mood >= len(config["moods"]):
     saved_mood = 0
     write_mood(str(saved_mood))
 
 mood = saved_mood
 
 
-
 while True:
     now = time.time()
-    while (time.time() - now < 3):
-    
-        if (badger.pressed_any()):
+    while time.time() - now < 3:
+
+        if badger.pressed_any():
+            badger.led(10)
             now = time.time()
             if badger.pressed(badger2040.BUTTON_UP):
+                badger.led(64)
                 mood += 1
-                if mood >= len(config['moods']):
+                if mood >= len(config["moods"]):
                     mood = 0
-            
+                write_mood(str(mood))
+                # as fast as we can go without ghosting
+                refresh_screen(mood, badger2040.UPDATE_FAST)
+
             elif badger.pressed(badger2040.BUTTON_DOWN):
+                badger.led(64)
                 mood -= 1
-                if mood < 0 :
-                    mood = len(config['moods']) - 1
+                if mood < 0:
+                    mood = len(config["moods"]) - 1
+                write_mood(str(mood))
+                # as fast as we can go without ghosting
+                refresh_screen(mood, badger2040.UPDATE_FAST)
 
-                
-            write_mood(str(mood))
-            refresh_screen(mood,badger2040.UPDATE_TURBO)
+            else:
+                pass
 
-    refresh_screen(mood,badger2040.UPDATE_NORMAL)
+            badger.led(0)
+
+    # if no ghosting then don't need to update the screen
+    # refresh_screen(mood, badger2040.UPDATE_NORMAL)
     badger2040.turn_off()
-
-
-
-
-

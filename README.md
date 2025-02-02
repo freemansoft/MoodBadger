@@ -12,6 +12,8 @@ This device serves as an emotional communication aid, helping children who may f
 - Provide a non-verbal method of emotional communication
 - Support emotional awareness and regulation
 
+![Sample screen](docs/badge_embarassed.jpg)
+
 ## Features
 
 - Easy-to-use button controls for cycling through different emotional states
@@ -30,6 +32,7 @@ The Badger2040 comes with onboard storage, so no additional storage hardware is 
 ## Display Specifications
 
 The Badger2040 uses an e-ink display with the following specifications:
+
 - Resolution: 296 x 128 pixels
 - Color Depth: 1-bit (black and white only)
 - Available RAM: ~128KB for image processing
@@ -37,6 +40,7 @@ The Badger2040 uses an e-ink display with the following specifications:
 ### Image Requirements
 
 For optimal display quality:
+
 1. Images should be sized appropriately for the 296 x 128 pixel display
    - Recommended size: ~100x100 pixels for images with accompanying text
    - Full width possible if no text is needed (296 pixels)
@@ -46,6 +50,7 @@ For optimal display quality:
 5. Images are positioned at coordinates (0,0) in the current implementation
 
 ### Image Optimization Tips
+
 - Use bold, simple designs that work well in black and white
 - Test images on the device to ensure clarity
 - Consider using icon-style graphics rather than detailed photographs
@@ -83,11 +88,13 @@ Each entry consists of:
 ## Usage Guide
 
 For Children:
+
 - Press UP button to move to the next emotion
 - Press DOWN button to go back to the previous emotion
 - The screen will stay on for easy viewing
 
 For Caregivers:
+
 - The device maintains its last selected state even when turned off
 - The screen automatically refreshes to maintain clarity
 - Device enters sleep mode to preserve battery life
