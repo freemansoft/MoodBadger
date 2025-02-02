@@ -12,7 +12,7 @@ This device serves as an emotional communication aid, helping children who may f
 - Provide a non-verbal method of emotional communication
 - Support emotional awareness and regulation
 
-![Sample screen](docs/badge_embarassed.jpg)
+![Sample screen](docs/badge_suprised.jpg)
 
 ## Features
 
