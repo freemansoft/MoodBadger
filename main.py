@@ -84,7 +84,7 @@ while True:
                     mood = 0
                 write_mood(str(mood))
                 # as fast as we can go without ghosting
-                refresh_screen(mood, badger2040.UPDATE_FAST)
+                refresh_screen(mood, badger2040.UPDATE_TURBO)
 
             elif badger.pressed(badger2040.BUTTON_DOWN):
                 badger.led(64)
@@ -93,13 +93,12 @@ while True:
                     mood = len(config["moods"]) - 1
                 write_mood(str(mood))
                 # as fast as we can go without ghosting
-                refresh_screen(mood, badger2040.UPDATE_FAST)
+                refresh_screen(mood, badger2040.UPDATE_TURBO)
 
             else:
                 pass
 
             badger.led(0)
 
-    # if no ghosting then don't need to update the screen
-    # refresh_screen(mood, badger2040.UPDATE_NORMAL)
+    refresh_screen(mood, badger2040.UPDATE_FAST)
     badger2040.turn_off()
