@@ -110,7 +110,42 @@ while True:
                     mood, len(config["moods"]), badger2040.UPDATE_TURBO
                 )
                 display_was_changed = True
-
+            elif badger.pressed(badger2040.BUTTON_A):
+                badger.led(64)
+                try:
+                    mood = int(config["shortcuts"]["A"])
+                except:
+                    pass
+                write_mood(str(mood))
+                # as fast as we can go without ghosting
+                refresh_screen(
+                    mood, len(config["moods"]), badger2040.UPDATE_TURBO
+                )
+                display_was_changed = True
+            elif badger.pressed(badger2040.BUTTON_B):
+                badger.led(64)
+                try:
+                    mood = int(config["shortcuts"]["B"])
+                except:
+                    pass
+                write_mood(str(mood))
+                # as fast as we can go without ghosting
+                refresh_screen(
+                    mood, len(config["moods"]), badger2040.UPDATE_TURBO
+                )
+                display_was_changed = True
+            elif badger.pressed(badger2040.BUTTON_C):                  
+                badger.led(64)
+                try:
+                    mood = int(config["shortcuts"]["C"])
+                except:
+                    pass
+                write_mood(str(mood))
+                # as fast as we can go without ghosting
+                refresh_screen(
+                    mood, len(config["moods"]), badger2040.UPDATE_TURBO
+                )
+                display_was_changed = True
             else:
                 pass
 

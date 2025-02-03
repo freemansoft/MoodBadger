@@ -22,6 +22,7 @@ This device serves as an emotional communication aid, helping children who may f
 - High contrast e-ink display that's easy to read and doesn't emit light
 - Long battery life with power-efficient design
 - Customizable emotions and images to match individual needs
+- Optional shortcuts using the A, B and C buttons
 
 ## Hardware Requirements
 
@@ -77,11 +78,18 @@ Create a `config.json` file in the `/moods` directory with your chosen emotions:
         ["Overwhelmed", "overwhelmed.jpg"],
         ["Need Break", "break.jpg"]
         // Add more emotional states as needed
-    ]
+    ],
+    "shortcuts" : {
+        // Zero indexed reference to the moods list
+        "A" : 4,
+        "B" : 2,
+        "C" : 0
+    }
 }
 ```
 
 Each entry consists of:
+
 - Text to display (keep it simple and clear)
 - Filename of the associated image
 
@@ -92,6 +100,7 @@ For Children:
 - Press UP button to move to the next emotion
 - Press DOWN button to go back to the previous emotion
 - The screen will stay on for easy viewing
+- If configured use the A, B and C buttons as shortcuts
 
 For Caregivers:
 
@@ -133,6 +142,7 @@ Contributions to make this tool more effective for neurodivergent children are w
 ## Adapting for Different Needs
 
 This tool can be customized for various situations:
+
 - Different age groups
 - Various communication needs
 - Different emotional vocabularies
