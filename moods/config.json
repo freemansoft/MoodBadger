@@ -1,6 +1,7 @@
-{"moods" :
+{
+	"moods" :
 		[
-			["Happy","happy.jpg"],
+			["Chilled","happy.jpg"],
 			["Sad","sad.jpg"],
 			["Bored","bored.jpg"],
 			["Annoyed","annoyed.jpg"],
@@ -8,6 +9,10 @@
 			["Embarassed","embarassed.jpg"],
 			["Suprised","surprised.jpg"],
 			["Very Happy","very_happy.jpg"]
-		]
-
+		],
+	"shortcuts" : {
+		"A" : 4,
+		"B" : 2,
+		"C" : 0
+	}
 }
