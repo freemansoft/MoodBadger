@@ -58,6 +58,15 @@ For optimal display quality:
 - Ensure sufficient contrast between elements
 - Avoid fine details that might be lost in the binary conversion
 
+## Using Image Fonts
+
+Glyph or Icon fonts can be used as long as you stay within the license restrictions of the icon or image font you are using. In this example we are using the Google Material icon fonts.
+
+- Find the icons you want on https://fonts.google.com/icons
+- Select an image size of `25 dpi`  generates a 100x100 `png` file.  An image of `32 dpi` generates a 128x128 `png` file.
+- Set the line color to black `#0000000` for the highest contrast
+- Convert the png to jpg with white backgrounds
+
 ## Setup Instructions
 
 1. Connect your Badger2040 to your computer via USB
