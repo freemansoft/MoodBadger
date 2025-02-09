@@ -17,6 +17,9 @@ MOOD_IMAGE_INDEX = 1
 
 # Keys used in the STATEFILE
 CONFIGFILE_MOODS_KEY = "moods"
+CONFIG_FILE_INITIAL_KEY = "initial"
+
+# Keys used in the STATEFILE
 STATEFILE_MOODSET_KEY = "moodset"
 STATEFILE_MOOD_KEY = "mood"
 
@@ -99,7 +102,7 @@ try:
     # default to 0
     current_moodset = 0
     # defualt to 0
-    current_mood = 0
+    current_mood = config[CONFIG_FILE_INITIAL_KEY][current_moodset]
     # then override with the read
     mood_composite = read_mood()
     current_moodset = mood_composite[STATEFILE_MOODSET_KEY]
@@ -157,7 +160,7 @@ while True:
                 badger.led(64)
                 current_moodset = 0
                 # should the current_mood index remain the same if possible?
-                current_mood = 0
+                current_mood = config[CONFIG_FILE_INITIAL_KEY][current_moodset]
                 write_mood(current_moodset, current_mood)
                 # as fast as we can go without ghosting
                 refresh_screen(
@@ -175,7 +178,7 @@ while True:
                 else:
                     current_moodset = 0
                 # should the current_mood index remain the same if possible?
-                current_mood = 0
+                current_mood = config[CONFIG_FILE_INITIAL_KEY][current_moodset]
                 write_mood(current_moodset, current_mood)
                 # as fast as we can go without ghosting
                 refresh_screen(
@@ -194,7 +197,7 @@ while True:
                 else:
                     current_moodset = 0
                 # should the current_mood index remain the same if possible?
-                current_mood = 0
+                current_mood = config[CONFIG_FILE_INITIAL_KEY][current_moodset]
                 write_mood(current_moodset, current_mood)
                 # as fast as we can go without ghosting
                 refresh_screen(

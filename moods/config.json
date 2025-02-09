@@ -12,10 +12,14 @@
 			["Very Happy","very_happy.jpg"]
 		],
 		[
-			["Agree","thumb_up.jpg"]
+			["Agree","thumb_up.jpg"],
+			["Disagree","thumb_down.jpg"]
 		],
 		[
+			["Agree","thumb_up.jpg"],
 			["Disagree","thumb_down.jpg"]
 		]
-	]
+	],
+	"initial":
+	[0,0,1]
 }
