@@ -63,7 +63,9 @@ For optimal display quality:
 Glyph or Icon fonts can be used as long as you stay within the license restrictions of the icon or image font you are using. In this example we are using the Google Material icon fonts.
 
 - Find the icons you want on https://fonts.google.com/icons
-- Select an image size of `25 dpi`  generates a 100x100 `png` file.  An image of `32 dpi` generates a 128x128 `png` file.
+- Select an image size of `25 dpi`  generates a 100x100 `png` file.
+  - An image of `32 dpi` generates a 128x128 `png` file. That was too large.
+- Set the font weight to 100 or 200. 100 is crisp
 - Set the line color to black `#0000000` for the highest contrast
 - Convert the png to jpg with white backgrounds
 
@@ -77,23 +79,29 @@ Glyph or Icon fonts can be used as long as you stay within the license restricti
 
 ## Configuration
 
-Create a `config.json` file in the `/moods` directory with your chosen emotions:
+Create a `config.json` file in the `/moods` directory with your chosen emotions. There can be up to three sets of _moods_ one for each of the keys across the bottom. The following example effectively sets up the `B` and `C` keys as shortcuts to thumbs up and down
 
 ```json
 {
-    "moods": [
-        ["Happy", "happy.jpg"],
-        ["Sad", "sad.jpg"],
-        ["Overwhelmed", "overwhelmed.jpg"],
-        ["Need Break", "break.jpg"]
-        // Add more emotional states as needed
+  "moods" :
+  [
+    [
+      ["Chilled","happy.jpg"],
+      ["Sad","sad.jpg"],
+      ["Bored","bored.jpg"],
+      ["Annoyed","annoyed.jpg"],
+      ["Angry","angry.jpg"],
+      ["Embarassed","embarassed.jpg"],
+      ["Suprised","surprised.jpg"],
+      ["Very Happy","very_happy.jpg"]
     ],
-    "shortcuts" : {
-        // Zero indexed reference to the moods list
-        "A" : 4,
-        "B" : 2,
-        "C" : 0
-    }
+    [
+      ["Agree","thumb_up.jpg"]
+    ],
+    [
+      ["Disagree","thumb_down.jpg"]
+    ]
+  ]
 }
 ```
 
