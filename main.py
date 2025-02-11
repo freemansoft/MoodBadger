@@ -11,30 +11,47 @@ import ujson
 # Set some constants
 CONFIGPATH = "/moods/"
 CONFIGFILE = "config.json"
-STATEFILE = "/state.txt"
+STATEFILE = "/state.json"
+MOOD_TEXT_INDEX = 0
+MOOD_IMAGE_INDEX = 1
+
+# Keys used in the STATEFILE
+CONFIGFILE_MOODS_KEY = "moods"
+CONFIG_FILE_INITIAL_KEY = "initial"
+
+# Keys used in the STATEFILE
+STATEFILE_MOODSET_KEY = "moodset"
+STATEFILE_MOOD_KEY = "mood"
 
 badger = badger2040.Badger2040()
 jpeg = jpegdec.JPEG(badger.display)
 
+current_moodset = 0
+current_mood = 0
 
-def write_mood(mood):
+
+# moodset is the index that determines the moodset
+# mood is the index that determines the mood in the current moodset
+# this could update the globals to simplify all the other code
+#   but segregation of concerns says no
+def write_mood(moodset, mood):
     f = uio.open(STATEFILE, "wt")
-    f.write(str(mood))
+    ujson.dump({STATEFILE_MOODSET_KEY: moodset, STATEFILE_MOOD_KEY: mood}, f)
     f.close()
-    f = uio.open(STATEFILE, "r")
-    read_mood = f.read()
-    f.close()
-    return read_mood
+    return read_mood()
 
 
+# JSON object with {moodset: int, mood: int}
+# this could update the globals to simplify all the other code
+#   but segregation of concerns says no
 def read_mood():
     f = uio.open(STATEFILE, "r")
-    read_mood = f.read()
+    read_mood_data = f.read()
     f.close()
-    return read_mood
+    return ujson.loads(read_mood_data)
 
 
-def refresh_screen(mood, num_moods, speed):
+def refresh_screen(moodset, mood, num_moods, speed):
     badger.set_update_speed(speed)
     badger.set_pen(15)
     badger.rectangle(0, 0, badger2040.WIDTH, badger2040.HEIGHT)
@@ -42,11 +59,21 @@ def refresh_screen(mood, num_moods, speed):
     badger.set_pen(0)
     badger.set_font("sans")
 
-    badger.text(config["moods"][mood][0], 140, 50, scale=0.75)
+    # This could do bounds checking here
+    badger.text(
+        config[CONFIGFILE_MOODS_KEY][moodset][mood][MOOD_TEXT_INDEX],
+        140,
+        50,
+        scale=0.75,
+    )
 
-    jpeg.open_file(CONFIGPATH + config["moods"][mood][1])
+    jpeg.open_file(
+        CONFIGPATH
+        + config[CONFIGFILE_MOODS_KEY][moodset][mood][MOOD_IMAGE_INDEX]
+    )
     jpeg.decode(0, 0)
 
+    # a square for each avaialble mood in this moodset
     for i in range(num_moods):
         x = 286
         y = int((128 / 2) - (num_moods * 10 / 2) + (i * 10))
@@ -59,25 +86,34 @@ def refresh_screen(mood, num_moods, speed):
     badger.update()
 
 
-# Open the config file and read out the json
-f = uio.open(CONFIGPATH + CONFIGFILE, mode="r")
-json_data = f.read()
-f.close()
-config = ujson.loads(json_data)
+def load_config():
+    # Open the config file and read out the json
+    f = uio.open(CONFIGPATH + CONFIGFILE, mode="r")
+    json_data = f.read()
+    f.close()
+    return ujson.loads(json_data)
+
+
+config = load_config()
+
 
 # Open the saved state and read out the saved mood
 try:
-    mood_text = read_mood()
-    saved_mood = int(mood_text)
+    # default to 0
+    current_moodset = 0
+    # defualt to 0
+    current_mood = config[CONFIG_FILE_INITIAL_KEY][current_moodset]
+    # then override with the read
+    mood_composite = read_mood()
+    current_moodset = mood_composite[STATEFILE_MOODSET_KEY]
+    current_mood = mood_composite[STATEFILE_MOOD_KEY]
 except:
-    saved_mood = 0
-    write_mood(str(saved_mood))
+    pass
 
-if saved_mood >= len(config["moods"]):
-    saved_mood = 0
-    write_mood(str(saved_mood))
-
-mood = saved_mood
+# If the saved moodset is out of bounds for the current moodset, reset it to 0
+if current_mood >= len(config[CONFIGFILE_MOODS_KEY][current_moodset]):
+    current_mood = 0
+    write_mood(current_moodset, current_mood)
 
 while True:
     display_was_changed = False
@@ -89,71 +125,102 @@ while True:
             now = time.time()
             if badger.pressed(badger2040.BUTTON_DOWN):
                 badger.led(64)
-                mood += 1
-                if mood >= len(config["moods"]):
-                    mood = 0
-                write_mood(str(mood))
+                current_mood += 1
+                if current_mood >= len(
+                    config[CONFIGFILE_MOODS_KEY][current_moodset]
+                ):
+                    current_mood = 0
+                write_mood(current_moodset, current_mood)
                 # as fast as we can go without ghosting
                 refresh_screen(
-                    mood, len(config["moods"]), badger2040.UPDATE_TURBO
+                    current_moodset,
+                    current_mood,
+                    len(config[CONFIGFILE_MOODS_KEY][current_moodset]),
+                    badger2040.UPDATE_TURBO,
                 )
                 display_was_changed = True
 
             elif badger.pressed(badger2040.BUTTON_UP):
                 badger.led(64)
-                mood -= 1
-                if mood < 0:
-                    mood = len(config["moods"]) - 1
-                write_mood(str(mood))
+                current_mood -= 1
+                if current_mood < 0:
+                    current_mood = (
+                        len(config[CONFIGFILE_MOODS_KEY][current_moodset]) - 1
+                    )
+                write_mood(current_moodset, current_mood)
                 # as fast as we can go without ghosting
                 refresh_screen(
-                    mood, len(config["moods"]), badger2040.UPDATE_TURBO
+                    current_moodset,
+                    current_mood,
+                    len(config[CONFIGFILE_MOODS_KEY][current_moodset]),
+                    badger2040.UPDATE_TURBO,
                 )
                 display_was_changed = True
             elif badger.pressed(badger2040.BUTTON_A):
                 badger.led(64)
-                try:
-                    mood = int(config["shortcuts"]["A"])
-                except:
-                    pass
-                write_mood(str(mood))
+                current_moodset = 0
+                # should the current_mood index remain the same if possible?
+                current_mood = config[CONFIG_FILE_INITIAL_KEY][current_moodset]
+                write_mood(current_moodset, current_mood)
                 # as fast as we can go without ghosting
                 refresh_screen(
-                    mood, len(config["moods"]), badger2040.UPDATE_TURBO
+                    current_moodset,
+                    current_mood,
+                    len(config[CONFIGFILE_MOODS_KEY][current_moodset]),
+                    badger2040.UPDATE_FAST,
                 )
-                display_was_changed = True
+                # Only need to redisplay if using TURBO
+                display_was_changed = False
             elif badger.pressed(badger2040.BUTTON_B):
                 badger.led(64)
-                try:
-                    mood = int(config["shortcuts"]["B"])
-                except:
-                    pass
-                write_mood(str(mood))
+                if len(config[CONFIGFILE_MOODS_KEY]) > 1:
+                    current_moodset = 1
+                else:
+                    current_moodset = 0
+                # should the current_mood index remain the same if possible?
+                current_mood = config[CONFIG_FILE_INITIAL_KEY][current_moodset]
+                write_mood(current_moodset, current_mood)
                 # as fast as we can go without ghosting
                 refresh_screen(
-                    mood, len(config["moods"]), badger2040.UPDATE_TURBO
+                    current_moodset,
+                    current_mood,
+                    len(config[CONFIGFILE_MOODS_KEY][current_moodset]),
+                    badger2040.UPDATE_FAST,
                 )
-                display_was_changed = True
-            elif badger.pressed(badger2040.BUTTON_C):                  
+                # Only need to redisplay if using TURBO
+                display_was_changed = False
+            elif badger.pressed(badger2040.BUTTON_C):
                 badger.led(64)
-                try:
-                    mood = int(config["shortcuts"]["C"])
-                except:
-                    pass
-                write_mood(str(mood))
+                badger.led(64)
+                if len(config[CONFIGFILE_MOODS_KEY]) > 2:
+                    current_moodset = 2
+                else:
+                    current_moodset = 0
+                # should the current_mood index remain the same if possible?
+                current_mood = config[CONFIG_FILE_INITIAL_KEY][current_moodset]
+                write_mood(current_moodset, current_mood)
                 # as fast as we can go without ghosting
                 refresh_screen(
-                    mood, len(config["moods"]), badger2040.UPDATE_TURBO
+                    current_moodset,
+                    current_mood,
+                    len(config[CONFIGFILE_MOODS_KEY][current_moodset]),
+                    badger2040.UPDATE_FAST,
                 )
-                display_was_changed = True
+                # Only need to redisplay if using TURBO
+                display_was_changed = False
             else:
                 pass
 
             badger.led(0)
 
-    # eliminate ghosting if they display was changed but has't changed for 3 seconds
+    # eliminate ghosting if the display was changed but has't changed for 3 seconds
     if display_was_changed:
-        refresh_screen(mood, len(config["moods"]), badger2040.UPDATE_FAST)
+        refresh_screen(
+            current_moodset,
+            current_mood,
+            len(config[CONFIGFILE_MOODS_KEY][current_moodset]),
+            badger2040.UPDATE_FAST,
+        )
         display_was_changed = False
 
     badger2040.turn_off()

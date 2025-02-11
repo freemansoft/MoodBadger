@@ -1,5 +1,6 @@
 {
 	"moods" :
+	[
 		[
 			["Chilled","happy.jpg"],
 			["Sad","sad.jpg"],
@@ -10,9 +11,15 @@
 			["Suprised","surprised.jpg"],
 			["Very Happy","very_happy.jpg"]
 		],
-	"shortcuts" : {
-		"A" : 4,
-		"B" : 2,
-		"C" : 0
-	}
+		[
+			["Agree","thumb_up.jpg"],
+			["Disagree","thumb_down.jpg"]
+		],
+		[
+			["Agree","thumb_up.jpg"],
+			["Disagree","thumb_down.jpg"]
+		]
+	],
+	"initial":
+	[0,0,1]
 }
